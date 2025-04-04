@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Rice Purity Test</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=UnifrakturMaguntia&display=swap');
+    
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #FBEEC8;
+      /* Background pattern */
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cGF0aCBkPSJNMzMuNiwxOC45YzAuNi0wLjYsMS40LTEsMi4zLTEuMWMwLjktMC4xLDEuOCwwLjIsMi42LDAuN2MwLjcsMC41LDEuMywxLjIsMS43LDJjMC40LDAuOCwwLjYsMS43LDAuNiwyLjZjMCwwLjUtMC4xLDEtMC4yLDEuNWMtMC4xLDAuNS0wLjMsMC45LTAuNiwxLjNjLTAuMywwLjQtMC42LDAuNy0xLDAuOWMtMC40LDAuMi0wLjgsMC4zLTEuMywwLjNjLTAuNSwwLTEtMC4xLTEuNC0wLjRjLTAuNC0wLjMtMC44LTAuNy0xLjEtMS4xYy0wLjMtMC41LTAuNS0xLTAuNi0xLjVjLTAuMS0wLjYtMC4xLTEuMSwwLTEuN0MzMi45LDIxLDMzLjEsMTkuOSwzMy42LDE4Ljl6Ii8+PHBhdGggZD0iTTc3LjYsNjguOWMwLjYtMC42LDEuNC0xLDIuMy0xLjFjMC45LTAuMSwxLjgsMC4yLDIuNiwwLjdjMC43LDAuNSwxLjMsMS4yLDEuNywyYzAuNCwwLjgsMC42LDEuNywwLjYsMi42YzAsMC41LTAuMSwxLTAuMiwxLjVjLTAuMSwwLjUtMC4zLDAuOS0wLjYsMS4zYy0wLjMsMC40LTAuNiwwLjctMSwwLjljLTAuNCwwLjItMC44LDAuMy0xLjMsMC4zYy0wLjUsMC0xLTAuMS0xLjQtMC40Yy0wLjQtMC4zLTAuOC0wLjctMS4xLTEuMWMtMC4zLTAuNS0wLjUtMS0wLjYtMS41Yy0wLjEtMC42LTAuMS0xLjEsMC0xLjdDNzYuOSw3MSw3Ny4xLDY5LjksNzcuNiw2OC45eiIvPjxwYXRoIGQ9Ik01Mi42LDQzLjljMC42LTAuNiwxLjQtMSwyLjMtMS4xYzAuOS0wLjEsMS44LDAuMiwyLjYsMC43YzAuNywwLjUsMS4zLDEuMiwxLjcsMmMwLjQsMC44LDAuNiwxLjcsMC42LDIuNmMwLDAuNS0wLjEsMS0wLjIsMS41Yy0wLjEsMC41LTAuMywwLjktMC42LDEuM2MtMC4zLDAuNC0wLjYsMC43LTEsMC45Yy0wLjQsMC4yLTAuOCwwLjMtMS4zLDAuM2MtMC41LDAtMS0wLjEtMS40LTAuNGMtMC40LTAuMy0wLjgtMC43LTEuMS0xLjFjLTAuMy0wLjUtMC41LTEtMC42LTEuNWMtMC4xLTAuNi0wLjEtMS4xLDAtMS43QzUxLjksNDYsNTIuMSw0NC45LDUyLjYsNDMuOXoiLz48cGF0aCBkPSJNMjIuNiw5My45YzAuNi0wLjYsMS40LTEsMi4zLTEuMWMwLjktMC4xLDEuOCwwLjIsMi42LDAuN2MwLjcsMC41LDEuMywxLjIsMS43LDJjMC40LDAuOCwwLjYsMS43LDAuNiwyLjZjMCwwLjUtMC4xLDEtMC4yLDEuNWMtMC4xLDAuNS0wLjMsMC45LTAuNiwxLjNjLTAuMywwLjQtMC42LDAuNy0xLDAuOWMtMC40LDAuMi0wLjgsMC4zLTEuMywwLjNjLTAuNSwwLTEtMC4xLTEuNC0wLjRjLTAuNC0wLjMtMC44LTAuNy0xLjEtMS4xYy0wLjMtMC41LTAuNS0xLTAuNi0xLjVjLTAuMS0wLjYtMC4xLTEuMSwwLTEuN0MyMS45LDk2LDIyLjEsOTQuOSwyMi42LDkzLjl6Ii8+');
+      background-repeat: repeat;
+      background-size: 50px 50px;
+      background-blend-mode: multiply;
+    }
+    
+    /* Header Styles */
+    .header-container {
+      text-align: center;
+      position: relative;
+      padding: 10px 0;
+      margin-bottom: 20px;
+    }
+    
+    .horizontal-line {
+      width: 90%;
+      max-width: 200px;
+      height: 2px;
+      background-color: black;
+      margin: 5px 0;
+      z-index: 2;
+    }
+    
+    .title-with-lines {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 20px 0;
+      position: relative;
+    }
+    
+    .side-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      flex: 1;
+      align-items: center;
+    }
+    
+    .left-lines {
+      margin-right: 20px;
+    }
+    
+    .right-lines {
+      margin-left: 20px;
+    }
+    
+    .official-text {
+      font-family: 'Playfair Display', serif;
+      color: #8B0000;
+      font-size: 36px;
+      font-weight: bold;
+      transform: rotate(-10deg);
+      position: absolute;
+      top: 20px;
+      left: 10px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+      z-index: 2;
+    }
+    
+    .the-text {
+      font-family: 'Playfair Display', serif;
+      color: #8B0000;
+      font-size: 24px;
+      font-weight: bold;
+      transform: rotate(-5deg);
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 2;
+    }
+    
+    .purity-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 46px;
+      font-weight: bold;
+      line-height: 1;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .title-with-lines:before {
+      content: "";
+      position: absolute;
+      top: -25px;
+      left: 0;
+      right: 0;
+      bottom: -50px;
+      background-color: rgba(255,255,255,1);
+      z-index: 0;
+      border-radius: 10px;
+    }
+    
+    .tagline {
+      font-style: italic;
+      font-size: 20px;
+      text-align: left;
+      margin-top: 10px;
+      margin-left: 10px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .intro {
+      background-color: rgba(255, 255, 255, 1);
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .test-items {
+      background-color: rgba(255, 255, 255, 1);
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .item {
+      margin-bottom: 10px;
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .item:hover {
+      background-color: rgba(249, 249, 249, 1);
+    }
+    
+    .item label {
+      display: flex;
+      align-items: flex-start;
+      cursor: pointer;
+    }
+    
+    .item input {
+      margin-right: 10px;
+      margin-top: 3px;
+    }
+    
+    .buttons {
+      margin-top: 20px;
+      text-align: center;
+    }
+    
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 0 5px;
+    }
+    
+    button:hover {
+      background-color: #45a049;
+    }
+    
+    #reset {
+      background-color: #f44336;
+    }
+    
+    #reset:hover {
+      background-color: #d32f2f;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header Section -->
+  <div class="header-container">
+    <div class="the-text"></div>
+    <div class="official-text">The Official</div>
+    <div class="title-with-lines">
+      <div class="side-lines left-lines">
+        <div class="horizontal-line"></div>
+        <div class="horizontal-line"></div>
+        <div class="horizontal-line"></div>
+      </div>
+      <div class="purity-text">Ga Tech Purity Test</div>
+      <div class="side-lines right-lines">
+        <div class="horizontal-line"></div>
+        <div class="horizontal-line"></div>
+        <div class="horizontal-line"></div>
+      </div>
+    </div>
+    <div class="tagline">Have you ever...</div>
+  </div>
+  
+  <div class="intro">
+    <p><strong>Caution:</strong> This is not a bucket list. Completion of all items on this test will likely result in death.</p>
+    <p>Click on every item you have done.</p>
+  </div>
+  
+  <!-- Editor section removed -->
+  
+  <div class="test-items" id="test-container">
+    <!-- Using an ordered list for numbered items -->
+    <ol id="purity-test">
+      <!-- Questions will be inserted here by JavaScript -->
+    </ol>
+    <div class="buttons">
+      <button id="calculate" onclick="calculateScore()">Calculate Score</button>
+      <button id="reset" onclick="resetTest()">Reset</button>
+    </div>
+  </div>
+  
+  <script>
+    // Default questions
+    const defaultQuestions = [
+      "Taken a nap in the hammocks on campus?",
+      "Studied in Crossland?",
+      "Studied in Price Gilbert?",
+      "Hi‑fived Buzz?",
+      "Seen a furry on campus?",
+      "Waited 1+ week for dorm maintenance",
+      "Eaten Papa Johns pizza from Shaq?",
+      "Swam in the Olympic pool?",
+      "Used the robot food delivery system?",
+      "Lost your Buzzcard?",
+      "Turned in an assignment at 11:59?",
+      "Thought about switching majors?",
+      "Thought about dropping out?",
+      "Dropped a class after the first week?",
+      "Placed a terrible review on Rate My Professor?",
+      "Pulled an all‑night for a project or test?",
+      "Failed a class?",
+      "Retook a class?",
+      "Skipped more than 4 classes in 1 week?",
+      "Been caught skipping class by professors?",
+      "Procrastinated on homework, failed all your classes, then complained?",
+      "Gotten a parking ticket or boot?",
+      "Danced without leaving room for Jesus?",
+      "Been in a relationship?",
+      "Cried after failing a test?",
+      "Went to class drunk?",
+      "Went to class high?",
+      "Gotten drunk after failing a test?",
+      "Gotten high after failing a test?",
+      "Been to a frat party?",
+      "Regretted going to said frat party?",
+      "Eaten at Cookout at 3am while drunk?",
+      "Eaten at CM Chicken at 2am while drunk?",
+      "Been in a relationship with a TA?",
+      "Been in a relationship with a postgraduate?",
+      "Been in a relationship with a professor?",
+      "Been to a football game?",
+      "Memorized the “To Hell With Georgia” Chant?",
+      "Got sick from the dinning hall?",
+      "Driven inside The Ramblin’ Reck?",
+      "Removed a T on a building or sign?",
+      "Threw a party in your dorm?",
+      "Got party in your dorm shutdown?",
+      "Kicked out by your roommate because they needed to get active?",
+      "Kicked your roommate out to get active?",
+      "Gotten into a fight at a football game?",
+      "“Swam” in Kessler Campanile?",
+      "Had sexual intercourse",
+      "Gone streaking?",
+      "Been arrested?"
+    ];
+    
+    let currentQuestions = [...defaultQuestions];
+    
+    // Initialize the test with numbered items
+    function initializeTest() {
+      const testForm = document.getElementById('purity-test');
+      testForm.innerHTML = '';
+      
+      currentQuestions.forEach((question, index) => {
+        const li = document.createElement('li');
+        li.className = 'item';
+        
+        const label = document.createElement('label');
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = `q${index}`;
+        checkbox.name = `q${index}`;
+        const questionText = document.createTextNode(question);
+        
+        label.appendChild(checkbox);
+        label.appendChild(questionText);
+        li.appendChild(label);
+        testForm.appendChild(li);
+      });
+    }
+    
+    // Calculate the purity score as 100 minus the number of checked items and redirect to result page
+    function calculateScore() {
+      const form = document.getElementById('purity-test');
+      const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+      
+      let checked = 0;
+      checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+          checked++;
+        }
+      });
+      
+      const purityScore = 100 - checked;
+      window.location.href = "result.html?score=" + encodeURIComponent(purityScore);
+    }
+    
+    // Reset the test
+    function resetTest() {
+      const form = document.getElementById('purity-test');
+      const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+      
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
+      });
+    }
+    
+    // Add bee pattern background
+    function addBeePattern() {
+      document.body.style.backgroundImage = "url('https://e7.pngegg.com/pngimages/484/364/png-clipart-georgia-institute-of-technology-georgia-tech-yellow-jackets-football-georgia-tech-yellow-jackets-men-s-basketball-university-of-georgia-miami-hurricanes-football-jacket-miscellaneous-honey-thumbnail.png')";
+      document.body.style.backgroundSize = "50px 50px";
+      document.body.style.backgroundRepeat = "space";
+      document.body.style.backgroundColor = "#F7EED2";
+    }
+    
+    // Initialize test and background on page load
+    window.onload = function() {
+      initializeTest();
+      addBeePattern();
+    }
+  </script>
+</body>
+</html>
