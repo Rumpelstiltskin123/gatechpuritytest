@@ -1,0 +1,82 @@
+// Add these script tags to your result.html file before your existing script
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+<script>
+  // Firebase configuration - must match the same config in your other files
+const firebaseConfig = {
+  apiKey: "AIzaSyAuulXEMzgGC-r6jegSwQKN_W5FJjd7lfo",
+  authDomain: "gatech-purity-test-7d187.firebaseapp.com",
+  projectId: "gatech-purity-test-7d187",
+  storageBucket: "gatech-purity-test-7d187.firebasestorage.app",
+  messagingSenderId: "255210203843",
+  appId: "1:255210203843:web:8d72e897798da12ce09076",
+  measurementId: "G-B8PLMD1VTR"
+};
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+</script>
+
+<!-- Then replace your existing saveResult function with this one -->
+<script>
+  function saveResult() {
+    // Create an object with the results
+    const resultData = {
+      score: score,
+      checkedItems: checkedItems,
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent,
+      referrer: document.referrer
+    };
+    
+    // Try to save to Firebase first
+    try {
+      firebase.firestore().collection('purityTestResults').add(resultData)
+        .then(() => {
+          console.log("Result saved to Firebase successfully");
+          
+          // Update visit counter in Firebase
+          const visitCounterRef = firebase.firestore().collection('metrics').doc('visits');
+          visitCounterRef.get().then((doc) => {
+            if (doc.exists) {
+              // Increment existing counter
+              visitCounterRef.update({
+                count: firebase.firestore.FieldValue.increment(1)
+              });
+            } else {
+              // Create new counter
+              visitCounterRef.set({
+                count: 1
+              });
+            }
+          });
+        })
+        .catch((error) => {
+          console.error("Error saving to Firebase:", error);
+          saveToLocalStorage(resultData); // Fallback to localStorage
+        });
+    } catch (error) {
+      console.error("Firebase not available:", error);
+      saveToLocalStorage(resultData); // Fallback to localStorage
+    }
+  }
+  
+  // Fallback function to save to localStorage
+  function saveToLocalStorage(resultData) {
+    console.log("Falling back to localStorage");
+    
+    // Get existing results or initialize empty array
+    let results = JSON.parse(localStorage.getItem('purityTestResults')) || [];
+    
+    // Add new result
+    results.push(resultData);
+    
+    // Save back to localStorage
+    localStorage.setItem('purityTestResults', JSON.stringify(results));
+    
+    // Update visit counter
+    let visits = parseInt(localStorage.getItem('purityTestVisits') || '0');
+    localStorage.setItem('purityTestVisits', (visits + 1).toString());
+  }
+</script>
