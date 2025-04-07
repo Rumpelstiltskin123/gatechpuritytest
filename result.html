@@ -74,7 +74,8 @@
       font-size: 20px;
       margin-bottom: 10px;
     }
-  </style>
+    
+     </style>
 </head>
 <body>
   <div id="resultContainer">
@@ -82,17 +83,65 @@
     <div class="score-label">How pure were you?</div>
     <div id="scoreDisplay" class="score-display"></div>
     <button onclick="goBack()">Take the Test Again</button>
+</p>
+    <a href="admin.html" id="statsLink">Admin Dashboard</a>
   </div>
   
   <script>
-    // Read the score parameter from the URL
+    // Read the score and checked items parameter from the URL
     const urlParams = new URLSearchParams(window.location.search);
-    const score = urlParams.get('score');
+    const score = urlParams.get('score') || '100';
+    const checkedItems = urlParams.get('checked') || '';
+    
     document.getElementById('scoreDisplay').textContent = score;
+    
+
+    
+    // Set description based on score
+    function setDescription(score) {
+      const numScore = parseInt(score);
+      let description = '';
+      
+      for (const range in descriptions) {
+        const [max, min] = range.split('-').map(num => parseInt(num));
+        if (numScore <= max && numScore >= min) {
+          description = descriptions[range];
+          break;
+        }
+      }
+      
+      document.getElementById('scoreDescription').textContent = description;
+    }
     
     // Function to go back to the test page
     function goBack() {
       window.location.href = "index.html";
+    }
+   
+    
+    // Save result to analytics
+    function saveResult() {
+      // Create an object with the results
+      const resultData = {
+        score: score,
+        checkedItems: checkedItems,
+        timestamp: new Date().toISOString(),
+        userAgent: navigator.userAgent,
+        referrer: document.referrer
+      };
+      
+      // Get existing results from localStorage or initialize empty array
+      let results = JSON.parse(localStorage.getItem('purityTestResults')) || [];
+      
+      // Add new result
+      results.push(resultData);
+      
+      // Save back to localStorage
+      localStorage.setItem('purityTestResults', JSON.stringify(results));
+      
+      // Update visit counter
+      let visits = parseInt(localStorage.getItem('purityTestVisits') || '0');
+      localStorage.setItem('purityTestVisits', (visits + 1).toString());
     }
     
     // Add bee pattern background
@@ -106,6 +155,8 @@
     // Initialize on page load
     window.onload = function() {
       addBeePattern();
+      setDescription(score);
+      saveResult();
     }
   </script>
 </body>
