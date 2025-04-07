@@ -4,11 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Purity Test Admin Dashboard</title>
-  <!-- Add Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -72,38 +67,55 @@
       height: auto;
     }
     
-    #logoutButton {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background-color: #f44336;
+    .password-prompt {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0,0,0,0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    
+    .password-box {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 300px;
+      text-align: center;
+    }
+    
+    .password-box input {
+      padding: 10px;
+      width: 80%;
+      margin: 10px 0;
+    }
+    
+    .password-box button {
+      background-color: #4CAF50;
       color: white;
-      padding: 8px 16px;
+      padding: 10px 20px;
       border: none;
       border-radius: 4px;
       cursor: pointer;
     }
-    
-    #logoutButton:hover {
-      background-color: #d32f2f;
-    }
-    
-    .loading {
-      text-align: center;
-      padding: 40px;
-      font-size: 18px;
-      color: #666;
-    }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <!-- Loading indicator -->
-  <div id="loadingIndicator" class="loading">
-    Checking authentication...
+  <div id="passwordPrompt" class="password-prompt">
+    <div class="password-box">
+      <h2>Admin Access</h2>
+      <p>Enter the password to access the dashboard</p>
+      <input type="password" id="passwordInput" placeholder="Password">
+      <button onclick="checkPassword()">Login</button>
+    </div>
   </div>
 
   <div id="dashboardContent" style="display:none;">
-    <button id="logoutButton">Logout</button>
     <h1>Purity Test Analytics Dashboard</h1>
     
     <div class="dashboard-container">
@@ -147,95 +159,28 @@
   </div>
   
   <script>
-    // Firebase configuration - replace with your own Firebase project config
-const firebaseConfig = {
-  apiKey: "AIzaSyAuulXEMzgGC-r6jegSwQKN_W5FJjd7lfo",
-  authDomain: "gatech-purity-test-7d187.firebaseapp.com",
-  projectId: "gatech-purity-test-7d187",
-  storageBucket: "gatech-purity-test-7d187.firebasestorage.app",
-  messagingSenderId: "255210203843",
-  appId: "1:255210203843:web:8d72e897798da12ce09076",
-  measurementId: "G-B8PLMD1VTR"
-};
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
+    // Set your password here - change this to your preferred password
+    const ADMIN_PASSWORD = "TheSocialNetwork123";
     
-    // Check authentication state when page loads
-    document.addEventListener('DOMContentLoaded', function() {
-      // Check if user is authenticated
-      firebase.auth().onAuthStateChanged(function(user) {
-        document.getElementById('loadingIndicator').style.display = 'none';
-        
-        if (!user) {
-          // User is not signed in, redirect to login page
-          window.location.href = 'login.html';
-        } else {
-          // User is signed in, show dashboard
-          document.getElementById('dashboardContent').style.display = 'block';
-          loadDashboard();
-        }
-      });
-      
-      // Add logout functionality
-      document.getElementById('logoutButton').addEventListener('click', function() {
-        firebase.auth().signOut().then(function() {
-          // Sign-out successful, redirect to login page
-          window.location.href = 'login.html';
-        }).catch(function(error) {
-          // An error happened
-          console.error('Logout error:', error);
-        });
-      });
-    });
-    
-    function loadDashboard() {
-      // First try to get data from Firestore
-      firebase.firestore().collection('purityTestResults')
-        .orderBy('timestamp', 'desc')
-        .get()
-        .then((querySnapshot) => {
-          const results = [];
-          querySnapshot.forEach((doc) => {
-            results.push(doc.data());
-          });
-          
-          // If we have Firestore data, use it
-          if (results.length > 0) {
-            displayDashboardData(results);
-            
-            // Get visit count from Firestore
-            firebase.firestore().collection('metrics').doc('visits')
-              .get()
-              .then((doc) => {
-                const visits = doc.exists ? doc.data().count : 0;
-                document.getElementById('totalVisitors').textContent = visits;
-              });
-          } else {
-            // Fall back to localStorage if no Firestore data
-            console.log("No data in Firestore, falling back to localStorage");
-            fallbackToLocalStorage();
-          }
-        })
-        .catch((error) => {
-          // Error with Firestore, fall back to localStorage
-          console.error("Error accessing Firestore:", error);
-          fallbackToLocalStorage();
-        });
+    function checkPassword() {
+      const password = document.getElementById('passwordInput').value;
+      if (password === ADMIN_PASSWORD) {
+        document.getElementById('passwordPrompt').style.display = 'none';
+        document.getElementById('dashboardContent').style.display = 'block';
+        loadDashboard();
+      } else {
+        alert("Incorrect password. Please try again.");
+      }
     }
     
-    function fallbackToLocalStorage() {
-      // Fallback to localStorage for backward compatibility
+    function loadDashboard() {
+      // Get data from localStorage
       const results = JSON.parse(localStorage.getItem('purityTestResults')) || [];
       const visits = parseInt(localStorage.getItem('purityTestVisits') || '0');
-      
+     
       // Update total visitors
       document.getElementById('totalVisitors').textContent = visits;
       
-      displayDashboardData(results);
-    }
-    
-    function displayDashboardData(results) {
       // Calculate and update average score
       if (results.length > 0) {
         const totalScore = results.reduce((sum, result) => sum + parseInt(result.score), 0);
@@ -245,7 +190,6 @@ const firebaseConfig = {
       
       // Populate recent results table
       const tableBody = document.getElementById('recentResults').getElementsByTagName('tbody')[0];
-      tableBody.innerHTML = ''; // Clear existing rows
       
       // Sort results by timestamp (newest first)
       const sortedResults = [...results].sort((a, b) => 
@@ -271,10 +215,7 @@ const firebaseConfig = {
         // Add data to cells
         dateCell.textContent = formattedDate;
         scoreCell.textContent = result.score;
-        
-        const checkedItemsCount = result.checkedItems ? 
-          (result.checkedItems.split(',').filter(i => i.trim() !== '').length) : 0;
-        itemsCell.textContent = checkedItemsCount + " items";
+        itemsCell.textContent = (result.checkedItems.split(',').length - 1) + " items";
         
         // Extract browser and OS info from user agent
         const userAgent = result.userAgent;
@@ -306,8 +247,10 @@ const firebaseConfig = {
         userAgentCell.textContent = `${browserInfo} on ${osInfo}`;
       });
       
-      // Create charts
+      // Create score distribution chart
       createScoreChart(results);
+      
+      // Create items chart
       createItemsChart(results);
     }
     
@@ -400,44 +343,8 @@ const firebaseConfig = {
       
       // Create chart
       const ctx = document.getElementById('itemsChart').getContext('2d');
-      
-      // Check if Chart.js supports horizontalBar (older versions) or needs indexAxis (newer versions)
-      const chartType = Chart.controllers.horizontalBar ? 'horizontalBar' : 'bar';
-      const chartOptions = {
-        plugins: {
-          title: {
-            display: true,
-            text: 'Most Commonly Checked Items'
-          }
-        }
-      };
-      
-      // Add either horizontalBar config or indexAxis config based on Chart.js version
-      if (chartType === 'bar') {
-        chartOptions.indexAxis = 'y';
-        chartOptions.scales = {
-          x: {
-            beginAtZero: true,
-            title: {
-              display: true,
-              text: 'Number of Checks'
-            }
-          }
-        };
-      } else {
-        chartOptions.scales = {
-          x: {
-            beginAtZero: true,
-            title: {
-              display: true,
-              text: 'Number of Checks'
-            }
-          }
-        };
-      }
-      
       new Chart(ctx, {
-        type: chartType,
+        type: 'horizontalBar',
         data: {
           labels: sortedItems.map(entry => entry.item),
           datasets: [{
@@ -448,7 +355,24 @@ const firebaseConfig = {
             borderWidth: 1
           }]
         },
-        options: chartOptions
+        options: {
+          indexAxis: 'y',
+          scales: {
+            x: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Number of Checks'
+              }
+            }
+          },
+          plugins: {
+            title: {
+              display: true,
+              text: 'Most Commonly Checked Items'
+            }
+          }
+        }
       });
     }
   </script>
