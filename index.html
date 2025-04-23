@@ -304,21 +304,24 @@
       });
     }
     
-    // Calculate the purity score as 100 minus the number of checked items and redirect to result page
-    function calculateScore() {
-      const form = document.getElementById('purity-test');
-      const checkboxes = form.querySelectorAll('input[type="checkbox"]');
-      
-      let checked = 0;
-      checkboxes.forEach(checkbox => {
-        if (checkbox.checked) {
-          checked++;
-        }
-      });
-      
-      const purityScore = 100 - checked;
-      window.location.href = "result.html?score=" + encodeURIComponent(purityScore);
+    // Function to calculate score and save data
+function calculateScore() {
+  const form = document.getElementById('purity-test');
+  const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+  
+  let checked = 0;
+  let checkedItems = [];
+  
+  checkboxes.forEach((checkbox, index) => {
+    if (checkbox.checked) {
+      checked++;
+      checkedItems.push(index);
     }
+  });
+  
+  const purityScore = 100 - checked;
+  window.location.href = "result.html?score=" + encodeURIComponent(purityScore) + "&checked=" + encodeURIComponent(checkedItems.join(','));
+}
     
     // Reset the test
     function resetTest() {
