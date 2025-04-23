@@ -119,25 +119,6 @@
     
     document.getElementById('scoreDisplay').textContent = score;
     
-    // Set description based on score
-    function setDescription(score) {
-      const numScore = parseInt(score);
-      let description = '';
-      
-      if (numScore >= 90) {
-        description = "You're as pure as freshly fallen snow! A true Georgia Tech saint.";
-      } else if (numScore >= 70) {
-        description = "Pretty innocent! You've experienced some of GT life, but still have much to discover.";
-      } else if (numScore >= 50) {
-        description = "You've had a balanced college experience - not too wild, not too tame.";
-      } else if (numScore >= 30) {
-        description = "You've definitely made the most of your time at Georgia Tech!";
-      } else {
-        description = "Wow... you've really experienced it all at Georgia Tech. Maybe dial it back a bit?";
-      }
-      
-      document.getElementById('scoreDescription').textContent = description;
-    }
     
     // Function to go back to the test page
     function goBack() {
