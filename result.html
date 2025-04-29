@@ -1,200 +1,135 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Purity Score Result</title>
-  <!-- Firebase libraries -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=UnifrakturMaguntia&display=swap');
-    
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #FBEEC8;
-      /* Background pattern same as original */
-      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cGF0aCBkPSJNMzMuNiwxOC45YzAuNi0wLjYsMS40LTEsMi4zLTEuMWMwLjktMC4xLDEuOCwwLjIsMi42LDAuN2MwLjcsMC41LDEuMywxLjIsMS43LDJjMC40LDAuOCwwLjYsMS43LDAuNiwyLjZjMCwwLjUtMC4xLDEtMC4yLDEuNWMtMC4xLDAuNS0wLjMsMC45LTAuNiwxLjNjLTAuMywwLjQtMC42LDAuNy0xLDAuOWMtMC40LDAuMi0wLjgsMC4zLTEuMywwLjNjLTAuNSwwLTEtMC4xLTEuNC0wLjRjLTAuNC0wLjMtMC44LTAuNy0xLjEtMS4xYy0wLjMtMC41LTAuNS0xLTAuNi0xLjVjLTAuMS0wLjYtMC4xLTEuMSwwLTEuN0MzMi45LDIxLDMzLjEsMTkuOSwzMy42LDE4Ljl6Ii8+PHBhdGggZD0iTTc3LjYsNjguOWMwLjYtMC42LDEuNC0xLDIuMy0xLjFjMC45LTAuMSwxLjgsMC4yLDIuNiwwLjdjMC43LDAuNSwxLjMsMS4yLDEuNywyYzAuNCwwLjgsMC42LDEuNywwLjYsMi42YzAsMC41LTAuMSwxLTAuMiwxLjVjLTAuMSwwLjUtMC4zLDAuOS0wLjYsMS4zYy0wLjMsMC40LTAuNiwwLjctMSwwLjljLTAuNCwwLjItMC44LDAuMy0xLjMsMC4zYy0wLjUsMC0xLTAuMS0xLjQtMC40Yy0wLjQtMC4zLTAuOC0wLjctMS4xLTEuMWMtMC4zLTAuNS0wLjUtMS0wLjYtMS41Yy0wLjEtMC42LTAuMS0xLjEsMC0xLjdDNzYuOSw3MSw3Ny4xLDY5LjksNzcuNiw2OC45eiIvPjxwYXRoIGQ9Ik01Mi42LDQzLjljMC42LTAuNiwxLjQtMSwyLjMtMS4xYzAuOS0wLjEsMS44LDAuMiwyLjYsMC43YzAuNywwLjUsMS4zLDEuMiwxLjcsMmMwLjQsMC44LDAuNiwxLjcsMC42LDIuNmMwLDAuNS0wLjEsMS0wLjIsMS41Yy0wLjEsMC41LTAuMywwLjktMC42LDEuM2MtMC4zLDAuNC0wLjYsMC43LTEsMC45Yy0wLjQsMC4yLTAuOCwwLjMtMS4zLDAuM2MtMC41LDAtMS0wLjEtMS40LTAuNGMtMC40LTAuMy0wLjgtMC43LTEuMS0xLjFjLTAuMy0wLjUtMC41LTEtMC42LTEuNWMtMC4xLTAuNi0wLjEtMS4xLDAtMS43QzUxLjksNDYsNTIuMSw0NC45LDUyLjYsNDMuOXoiLz48cGF0aCBkPSJNMjIuNiw5My45YzAuNi0wLjYsMS40LTEsMi4zLTEuMWMwLjktMC4xLDEuOCwwLjIsMi42LDAuN2MwLjcsMC41LDEuMywxLjIsMS43LDJjMC40LDAuOCwwLjYsMS43LDAuNiwyLjZjMCwwLjUtMC4xLDEtMC4yLDEuNWMtMC4xLDAuNS0wLjMsMC45LTAuNiwxLjNjLTAuMywwLjQtMC42LDAuNy0xLDAuOWMtMC40LDAuMi0wLjgsMC4zLTEuMywwLjNjLTAuNSwwLTEtMC4xLTEuNC0wLjRjLTAuNC0wLjMtMC44LTAuNy0xLjEtMS4xYy0wLjMtMC41LTAuNS0xLTAuNi0xLjVjLTAuMS0wLjYtMC4xLTEuMSwwLTEuN0MyMS45LDk2LDIyLjEsOTQuOSwyMi42LDkzLjl6Ii8+');
-      background-repeat: repeat;
-      background-size: 50px 50px;
-      background-blend-mode: multiply;
-    }
-    
-    .header-container {
-      text-align: center;
-      position: relative;
-      padding: 10px 0;
-      margin-bottom: 20px;
-    }
-    
-    #resultContainer {
-      background-color: #fff;
-      padding: 20px;
-      border: 2px solid #ccc;
-      border-radius: 10px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      margin: 20px 0;
-      text-align: center;
-    }
-    
-    h1 {
-      font-size: 36px;
-      color: #8B0000;
-      margin: 0;
-    }
-    
-    p {
-      font-size: 24px;
-      margin: 20px 0 0;
-    }
-    
-    button {
-      background-color: #4CAF50;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
-      margin-top: 20px;
-    }
-    
-    button:hover {
-      background-color: #45a049;
-    }
-    
-    .score-display {
-      font-size: 64px;
-      font-weight: bold;
-      color: #8B0000;
-      margin: 20px 0;
-    }
-    
-    .score-label {
-      font-size: 20px;
-      margin-bottom: 10px;
-    }
-    
-    #scoreDescription {
-      font-size: 18px;
-      margin-top: 10px;
-      margin-bottom: 20px;
-    }
-  </style>
-</head>
-<body>
-  <div id="resultContainer">
-    <h1>Your Purity Score</h1>
-    <div class="score-label">How pure were you?</div>
-    <div id="scoreDisplay" class="score-display"></div>
-    <div id="scoreDescription"></div>
-    <button onclick="goBack()">Take the Test Again</button>
-  </div>
+<script>
+  // At the beginning of your script
+  console.log("Firebase initializing...");
   
-  <script>
-    // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyAuulXEMzgGC-r6jegSwQKN_W5FJjd7lfo",
-      authDomain: "gatech-purity-test-7d187.firebaseapp.com",
-      projectId: "gatech-purity-test-7d187",
-      storageBucket: "gatech-purity-test-7d187.firebasestorage.app",
-      messagingSenderId: "255210203843",
-      appId: "1:255210203843:web:8d72e897798da12ce09076",
-      measurementId: "G-B8PLMD1VTR"
+  // Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyAuulXEMzgGC-r6jegSwQKN_W5FJjd7lfo",
+    authDomain: "gatech-purity-test-7d187.firebaseapp.com",
+    projectId: "gatech-purity-test-7d187",
+    storageBucket: "gatech-purity-test-7d187.firebasestorage.app",
+    messagingSenderId: "255210203843",
+    appId: "1:255210203843:web:8d72e897798da12ce09076",
+    measurementId: "G-B8PLMD1VTR"
+  };
+  
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  console.log("Firebase initialized successfully");
+  
+  // Get Firestore reference
+  const db = firebase.firestore();
+  
+  // Read the score and checked items parameter from the URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const score = urlParams.get('score') || '100';
+  const checkedItems = urlParams.get('checked') || '';
+  
+  document.getElementById('scoreDisplay').textContent = score;
+  
+  // Function to go back to the test page
+  function goBack() {
+    window.location.href = "index.html";
+  }
+  
+  // Save result to Firebase
+  function saveResult() {
+    console.log("Saving result to Firebase...");
+    console.log("Score:", score);
+    console.log("Checked items:", checkedItems);
+    
+    // Create an object with the results
+    const resultData = {
+      score: score,
+      checkedItems: checkedItems,
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent,
+      referrer: document.referrer
     };
     
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    
-    // Get Firestore reference
-    const db = firebase.firestore();
-    
-    // Read the score and checked items parameter from the URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const score = urlParams.get('score') || '100';
-    const checkedItems = urlParams.get('checked') || '';
-    
-    document.getElementById('scoreDisplay').textContent = score;
-    
-    
-    // Function to go back to the test page
-    function goBack() {
-      window.location.href = "index.html";
-    }
-    
-    // Save result to Firebase
-    function saveResult() {
-      // Create an object with the results
-      const resultData = {
-        score: score,
-        checkedItems: checkedItems,
-        timestamp: new Date().toISOString(),
-        userAgent: navigator.userAgent,
-        referrer: document.referrer
-      };
-      
-      // Save to Firebase Firestore
-      db.collection('purityTestResults').add(resultData)
-        .then(() => {
-          console.log("Result saved to Firebase successfully");
-          
-          // Update visit counter in Firebase
-          const visitCounterRef = db.collection('metrics').doc('visits');
-          visitCounterRef.get().then((doc) => {
-            if (doc.exists) {
-              // Increment existing counter
-              visitCounterRef.update({
-                count: firebase.firestore.FieldValue.increment(1)
-              });
-            } else {
-              // Create new counter
-              visitCounterRef.set({
-                count: 1
-              });
-            }
-          });
-        })
-        .catch((error) => {
-          console.error("Error saving to Firebase:", error);
-          saveToLocalStorage(resultData); // Fallback to localStorage
+    // Save to Firebase Firestore
+    db.collection('purityTestResults').add(resultData)
+      .then(() => {
+        console.log("Result saved to Firebase successfully");
+        
+        // Update visit counter in Firebase
+        const visitCounterRef = db.collection('metrics').doc('visits');
+        visitCounterRef.get().then((doc) => {
+          if (doc.exists) {
+            // Increment existing counter
+            visitCounterRef.update({
+              count: firebase.firestore.FieldValue.increment(1)
+            });
+            console.log("Visit counter updated");
+          } else {
+            // Create new counter
+            visitCounterRef.set({
+              count: 1
+            });
+            console.log("Visit counter created");
+          }
+        }).catch(error => {
+          console.error("Error updating visit counter:", error);
         });
-    }
+      })
+      .catch((error) => {
+        console.error("Error saving to Firebase:", error);
+        saveToLocalStorage(resultData); // Fallback to localStorage
+      });
+  }
+  
+  // Fallback function to save to localStorage
+  function saveToLocalStorage(resultData) {
+    console.log("Falling back to localStorage");
     
-    // Fallback function to save to localStorage
-    function saveToLocalStorage(resultData) {
-      console.log("Falling back to localStorage");
-      
-      // Get existing results or initialize empty array
-      let results = JSON.parse(localStorage.getItem('purityTestResults')) || [];
-      
-      // Add new result
-      results.push(resultData);
-      
-      // Save back to localStorage
-      localStorage.setItem('purityTestResults', JSON.stringify(results));
-      
-      // Update visit counter
-      let visits = parseInt(localStorage.getItem('purityTestVisits') || '0');
-      localStorage.setItem('purityTestVisits', (visits + 1).toString());
-    }
+    // Get existing results or initialize empty array
+    let results = JSON.parse(localStorage.getItem('purityTestResults')) || [];
     
-    // Add bee pattern background
-    function addBeePattern() {
-      document.body.style.backgroundImage = "url('https://e7.pngegg.com/pngimages/484/364/png-clipart-georgia-institute-of-technology-georgia-tech-yellow-jackets-football-georgia-tech-yellow-jackets-men-s-basketball-university-of-georgia-miami-hurricanes-football-jacket-miscellaneous-honey-thumbnail.png')";
-      document.body.style.backgroundSize = "50px 50px";
-      document.body.style.backgroundRepeat = "space";
-      document.body.style.backgroundColor = "#F7EED2";
-    }
+    // Add new result
+    results.push(resultData);
     
-    // Initialize on page load
-    window.onload = function() {
-      addBeePattern();
-      setDescription(score);
-      saveResult();
-    }
-  </script>
-</body>
-</html>
+    // Save back to localStorage
+    localStorage.setItem('purityTestResults', JSON.stringify(results));
+    
+    // Update visit counter
+    let visits = parseInt(localStorage.getItem('purityTestVisits') || '0');
+    localStorage.setItem('purityTestVisits', (visits + 1).toString());
+  }
+  
+  // Add bee pattern background
+  function addBeePattern() {
+    document.body.style.backgroundImage = "url('https://e7.pngegg.com/pngimages/484/364/png-clipart-georgia-institute-of-technology-georgia-tech-yellow-jackets-football-georgia-tech-yellow-jackets-men-s-basketball-university-of-georgia-miami-hurricanes-football-jacket-miscellaneous-honey-thumbnail.png')";
+    document.body.style.backgroundSize = "50px 50px";
+    document.body.style.backgroundRepeat = "space";
+    document.body.style.backgroundColor = "#F7EED2";
+  }
+  
+  // Test Firebase connection
+  function testFirebaseConnection() {
+    console.log("Testing Firestore connection...");
+    db.collection("test").doc("test-doc").set({
+      test: "Testing connection",
+      timestamp: new Date().toISOString()
+    })
+    .then(() => {
+      console.log("Test document successfully written!");
+    })
+    .catch((error) => {
+      console.error("Error writing test document: ", error);
+    });
+  }
+  
+  // Initialize on page load
+  window.onload = function() {
+    console.log("Page loaded, initializing...");
+    addBeePattern();
+    // Remove or comment out this line since you don't want descriptions
+    // setDescription(score);
+    
+    // Test Firebase connection
+    testFirebaseConnection();
+    
+    // Save the actual result
+    saveResult();
+  }
+</script>
