@@ -120,11 +120,16 @@
   }
   
   // Initialize on page load
-  window.onload = function() {
-    console.log("Page loaded, initializing...");
-    addBeePattern();
-    // Remove or comment out this line since you don't want descriptions
-    // setDescription(score);
+window.onload = function() {
+  console.log("Page loaded, initializing...");
+  addBeePattern();
+  
+  // Test Firebase connection
+  testFirebaseConnection();
+  
+  // Save the actual result
+  saveResult();
+}
     
     // Test Firebase connection
     testFirebaseConnection();
