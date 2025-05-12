@@ -183,111 +183,6 @@
     #reset:hover {
       background-color: #d32f2f;
     }
-    
-    /* Mobile responsive fixes */
-    @media screen and (max-width: 768px) {
-      .test-items ol {
-        counter-reset: item-counter;
-      }
-      
-      .test-items .item {
-        counter-increment: item-counter;
-        list-style: none;
-        padding: 15px 10px;
-        margin-bottom: 10px;
-        border: 1px solid #eee;
-        border-radius: 8px;
-        background-color: rgba(255, 255, 255, 0.95);
-      }
-      
-      .test-items .item label {
-        display: flex;
-        align-items: flex-start;
-        cursor: pointer;
-        position: relative;
-        padding-left: 60px;
-      }
-      
-      .test-items .item input[type="checkbox"] {
-        position: absolute;
-        left: 0;
-        top: 2px;
-        width: 20px;
-        height: 20px;
-        margin: 0;
-        z-index: 2;
-      }
-      
-      .test-items .item::before {
-        content: counter(item-counter);
-        position: absolute;
-        left: 25px;
-        top: 15px;
-        width: 25px;
-        height: 25px;
-        background-color: #8B0000;
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 12px;
-        font-weight: bold;
-      }
-      
-      .test-items .item label::before {
-        content: none;
-      }
-      
-      .test-items .item label::after {
-        content: none;
-      }
-      
-      /* Adjust body padding on mobile */
-      body {
-        padding: 10px;
-      }
-      
-      /* Make text slightly smaller on mobile */
-      .test-items .item {
-        font-size: 16px;
-        line-height: 1.5;
-      }
-    }
-
-    /* Additional general mobile improvements */
-    @media screen and (max-width: 480px) {
-      .header-container {
-        margin-bottom: 10px;
-      }
-      
-      .purity-text {
-        font-size: 36px;
-      }
-      
-      .official-text {
-        font-size: 28px;
-      }
-      
-      .intro {
-        padding: 12px;
-        margin-bottom: 15px;
-      }
-      
-      .test-items {
-        padding: 15px;
-      }
-      
-      .buttons {
-        margin-top: 15px;
-      }
-      
-      button {
-        padding: 12px 16px;
-        font-size: 15px;
-        margin: 5px 3px;
-      }
-    }
   </style>
 </head>
 <body>
@@ -369,16 +264,16 @@
       "Been in a relationship with a postgraduate?",
       "Been in a relationship with a professor?",
       "Been to a football game?",
-      "Memorized the "To Hell With Georgia" Chant?",
+      "Memorized the “To Hell With Georgia” Chant?",
       "Got sick from the dinning hall?",
-      "Driven inside The Ramblin' Reck?",
+      "Driven inside The Ramblin’ Reck?",
       "Removed a T on a building or sign?",
       "Threw a party in your dorm?",
       "Got party in your dorm shutdown?",
       "Kicked out by your roommate because they needed to get active?",
       "Kicked your roommate out to get active?",
       "Gotten into a fight at a football game?",
-      ""Swam" in Kessler Campanile?",
+      "“Swam” in Kessler Campanile?",
       "Had sexual intercourse",
       "Gone streaking?",
       "Been arrested?"
